@@ -1,5 +1,7 @@
 package com.br.myfood.cadastro.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,16 @@ public class ClientService {
 	
 	public Client insertClient(Client client) {
 		return this.clientRepository.save(client);
+	}
+	
+	public Client updateClient(Client client) {
+		Optional<Client> newClient = this.clientRepository.findById(client.getId());
+		
+		if(newClient.isPresent()) {
+			return this.clientRepository.save(client);
+		}else {
+			return null;
+		}
 	}
 	
 }
