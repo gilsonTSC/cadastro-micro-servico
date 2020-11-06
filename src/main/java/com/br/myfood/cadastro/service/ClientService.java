@@ -32,4 +32,14 @@ public class ClientService {
 		}
 	}
 	
+	public boolean deleteClient(Long id) {
+		Optional<Client> client = this.clientRepository.findById(id);
+		
+		if(client.isPresent()) {
+			this.clientRepository.delete(client.get());
+			return true;
+		}else {
+			return false;
+		}
+	}
 }
