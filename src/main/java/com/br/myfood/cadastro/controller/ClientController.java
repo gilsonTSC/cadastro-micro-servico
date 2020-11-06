@@ -1,10 +1,12 @@
 package com.br.myfood.cadastro.controller;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -51,6 +53,13 @@ public class ClientController {
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<Client> deleteClient(@PathVariable("id") Long id){
 		return this.clientService.deleteClient(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-	} 
+	}
+	
+	@GetMapping("/find/{id}")
+	public ResponseEntity<Client> findById(@PathVariable("id") Long id){
+		Optional<Client> client = this.clientService.findbyId(id);
+		
+		return client.isPresent() ? ResponseEntity.ok(client.get()) : ResponseEntity.notFound().build();
+	}
 	
 }
