@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.br.myfood.cadastro.dto.MenuDto;
+import com.br.myfood.cadastro.dto.MenuOrderDto;
 import com.br.myfood.cadastro.entity.Menu;
 import com.br.myfood.cadastro.entity.Restaurant;
+import com.br.myfood.cadastro.message.MenuSendMessage;
 import com.br.myfood.cadastro.reprository.MenuRepository;
 import com.br.myfood.cadastro.reprository.RestaurantRepository;
 
@@ -16,11 +18,13 @@ public class MenuService {
 
 	private final MenuRepository menuRepository;
 	private final RestaurantRepository restaurantRepository;
+	private final MenuSendMessage menuSendMessage;
 
 	@Autowired
-	public MenuService(MenuRepository menuRepository, RestaurantRepository restaurantRepository) {
+	public MenuService(MenuRepository menuRepository, RestaurantRepository restaurantRepository, MenuSendMessage menuSendMessage) {
 		this.menuRepository = menuRepository;
 		this.restaurantRepository = restaurantRepository;
+		this.menuSendMessage = menuSendMessage;
 	}
 	
 	public Menu insertMenu(MenuDto menuDto) {
@@ -29,7 +33,9 @@ public class MenuService {
 		if(restaurant.isPresent()) {
 			Menu menu = Menu.create(menuDto);
 			menu.setRestaurant(restaurant.get());
-			return this.menuRepository.save(menu);
+			Menu newMenu = this.menuRepository.save(menu);
+			this.menuSendMessage.sendMessage(new MenuOrderDto(newMenu.getId(), restaurant.get().getId()));
+			return newMenu;
 		}
 		return null;
 	}
