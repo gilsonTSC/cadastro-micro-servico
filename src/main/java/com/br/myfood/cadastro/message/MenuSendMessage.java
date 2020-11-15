@@ -13,7 +13,7 @@ public class MenuSendMessage {
 	@Value("${cadastro.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${cadastro.menu.routingkey}")
+    @Value("${adastro.menu.rabbitmq.routingkey}")
     private String routingkey;
 
     private final RabbitTemplate rabbitTemplate;
