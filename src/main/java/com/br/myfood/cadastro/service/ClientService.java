@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.br.myfood.cadastro.dto.ClientOrderDto;
+import com.br.myfood.cadastro.dto.LoginDto;
 import com.br.myfood.cadastro.entity.Client;
 import com.br.myfood.cadastro.message.ClientSendMessage;
+import com.br.myfood.cadastro.message.LoginSendMessage;
 import com.br.myfood.cadastro.reprository.ClientRepository;
 
 @Service
@@ -16,16 +18,20 @@ public class ClientService {
 	private final ClientRepository clientRepository;
 	
 	private final ClientSendMessage clientSendMessage;
+	
+	private final LoginSendMessage loginSendMessage;
 
 	@Autowired
-	public ClientService(ClientRepository clientRepository, ClientSendMessage clientSendMessage) {
+	public ClientService(ClientRepository clientRepository, ClientSendMessage clientSendMessage, LoginSendMessage loginSendMessage) {
 		this.clientRepository = clientRepository;
 		this.clientSendMessage = clientSendMessage;
+		this.loginSendMessage = loginSendMessage;
 	}
 	
 	public Client insertClient(Client client) {
 		Client newClient = this.clientRepository.save(client);
 		this.clientSendMessage.sendMessage(new ClientOrderDto(newClient.getId()));
+		this.loginSendMessage.sendMessage(new LoginDto(newClient.getEmail(), newClient.getPassword()));
 		return newClient;
 	}
 	
